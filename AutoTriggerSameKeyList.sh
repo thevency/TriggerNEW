@@ -63,9 +63,9 @@ for style in $ADSTYLE_LIST;do
 
 #JOB_LIST="AOS_10.x_R58MC34H3PE_Note10 AOS_8.x_1cb3e90b1b027ece_S9Plus"
 #InventoryKey_list=("lb.nYuXlQJ4blY" "lb.cNcwLKQbbNQ")
-
+echo "[AutoTriggerSameKey] Prepare Data For Comment & Report ...start"
 STYLE_VALUE=$style
-FILE_INFO="info_`date +"%Y-%m-%d-%H:%M"`"  #Use For Prepare data
+FILE_INFO="info_$style_`date +"%Y-%m-%d-%H:%M"`"  #Use For Prepare data
 
 echo "" > $FILE_INFO.txt
 
@@ -77,7 +77,9 @@ for job in $JOB_LIST;do
 
   OS_VALUE=`cut -d "_" -f2 <<< "$job"`
 
-  echo "[AutoTriggerSameKey] InventoryKey list SIZE: ${#InventoryKey_list[@]}" >> $FILE_INFO.txt
+
+
+  echo "[AutoTriggerSameKey] InventoryKey list SIZE: ${#InventoryKey_list[@]}" >> "$LOG_FILE".txt
 
   for (( a=0; a < ${#InventoryKey_list[@]}; a++ ));do
     BUILD_LIST+="$BUILD "
@@ -95,7 +97,7 @@ for job in $JOB_LIST;do
 
   BUILD_LIST=()
 done
-
+echo "[AutoTriggerSameKey] Prepare Data For Comment & Report ...end"
 echo "[AutoTriggerSameKey] Check For Ad style finish ..." >> "$LOG_FILE".txt
 
 #============== Check AD STYLE FINISH ==========================
