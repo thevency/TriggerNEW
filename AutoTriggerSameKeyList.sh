@@ -31,17 +31,17 @@ LOG_FILE="log_AutoTriggerSameListKey_`date +"%Y-%m-%d-%H:%M"`"
 
 #Only applied for Adstyles that have same inventory key list.
 for style in $ADSTYLE_LIST;do
-  echo "======================================\nTrigger Ad style: $style for all keys at " >> $LOG_FILE.txt
+  echo "======================================\nTrigger Ad style: $style for all keys at `date +"%Y-%m-%d-%H:%M"`" >> $LOG_FILE.txt
   echo "TestPlanID: $PlanID_VALUE\nAD_STYLE: $style" >> $LOG_FILE.txt
 
   for key in $InventoryKey_list;do
-    echo "Trigger for key: $key" >> $LOG_FILE.txt
+    echo "[AutoTriggerSameKey] Trigger for key: $key" >> $LOG_FILE.txt
 #    triggerList_AOS.sh: PlanID_VALUE=$1 STYLE_VALUE=$2 InventoryKey=$3 PHASE_VALUE=$4 JOB_LIST=$5 SERVER=$6 LOG=$7 $branch=$8
     ./triggerList.sh $PlanID_VALUE $style $key $PHASE_VALUE "${JOB_LIST[@]}" $SERVER $LOG_FILE $BRANCH $OS $STATUS_TO_TEST
     sleep 120
   done
 
-  echo "Finish Trigger Ad style $style" >> $LOG_FILE.txt
+  echo "[AutoTriggerSameKey] Finish Trigger Ad style $style" >> $LOG_FILE.txt
 
 #================2. Add comment & Get Report Info ===========
 
@@ -61,14 +61,14 @@ for job in $JOB_LIST;do
 
   OS_VALUE=`cut -d "_" -f2 <<< "$job"`
 
-  echo "InventoryKey list SIZE: ${#InventoryKey_list[@]}"
+  echo "[AutoTriggerSameKey] InventoryKey list SIZE: ${#InventoryKey_list[@]}" >> $FILE_INFO.txt
 
   for (( a=0; a < ${#InventoryKey_list[@]}; a++ ));do
     BUILD_LIST+="$BUILD "
     BUILD=$((BUILD+1))
   done
 
-  echo "BUILD LIST: $BUILD_LIST"
+  echo "[AutoTriggerSameKey] BUILD LIST: $BUILD_LIST"
 
   echo "JOB-$job--BUILD#$BUILD_LIST-STYLE#$STYLE_VALUE" >> $FILE_INFO.txt
 
@@ -80,7 +80,7 @@ for job in $JOB_LIST;do
   BUILD_LIST=()
 done
 
-echo "Check For Ad style finish ..." >> $LOG_FILE.txt
+echo "[AutoTriggerSameKey] Check For Ad style finish ..." >> $LOG_FILE.txt
 
 ./addComment.sh $SERVER "${JOB_LIST[@]}" $FILE_INFO $LOG_FILE
 
@@ -94,23 +94,23 @@ echo "Check For Ad style finish ..." >> $LOG_FILE.txt
     while [[ $STATUS_OF_ADSTYLE != "true" ]]
     do
       sleep 900
-      echo "Waiting with cycle 15 minutes" >> $LOG_FILE.txt
+      echo "[AutoTriggerSameKey] Waiting with cycle 15 minutes" >> $LOG_FILE.txt
     done
 
     if [[ $STATUS_OF_ADSTYLE == "true" ]]
     then
-      echo "Trigger next style" >> $LOG_FILE.txt
-      echo "==================" >> $LOG_FILE.txt
+      echo "[AutoTriggerSameKey] Trigger next style" >> $LOG_FILE.txt
+      echo "[AutoTriggerSameKey] ==================" >> $LOG_FILE.txt
     else
-      echo "May be a problem here - STATUS_OF_ADSTYLE: $STATUS_OF_ADSTYLE" >> $LOG_FILE.txt
+      echo "[AutoTriggerSameKey] May be a problem here - STATUS_OF_ADSTYLE: $STATUS_OF_ADSTYLE" >> $LOG_FILE.txt
     fi
   else
     #Phase1: Wait until all job of current style finish
-    echo "Phase 1 is trigger ...." >> $LOG_FILE.txt
-    sleep 60
-    # shellcheck disable=SC2039
-    ./checkJobListFinish.sh "${JOB_LIST[@]}" $SERVER
-    echo "====================="  >> $LOG_FILE.txt
+    echo "[AutoTriggerSameKey] Phase 1 is trigger ...." >> $LOG_FILE.txt
+#    sleep 60
+#    # shellcheck disable=SC2039
+#    ./checkJobListFinish.sh "${JOB_LIST[@]}" $SERVER
+#    echo "[AutoTriggerSameKey] ====================="  >> $LOG_FILE.txt
   fi
 done
 
