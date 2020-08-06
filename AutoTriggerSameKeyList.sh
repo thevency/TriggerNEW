@@ -82,9 +82,6 @@ done
 
 echo "[AutoTriggerSameKey] Check For Ad style finish ..." >> $LOG_FILE.txt
 
-./addComment.sh $SERVER "${JOB_LIST[@]}" $FILE_INFO $LOG_FILE
-
-
 #============== Check AD STYLE FINISH ==========================
 #Phase 2: It is required to check if current Adstyle is finished.
   if [[ $PHASE_VALUE == "2" ]]
@@ -112,6 +109,8 @@ echo "[AutoTriggerSameKey] Check For Ad style finish ..." >> $LOG_FILE.txt
 #    ./checkJobListFinish.sh "${JOB_LIST[@]}" $SERVER
 #    echo "[AutoTriggerSameKey] ====================="  >> $LOG_FILE.txt
   fi
+
+  ./addComment.sh "$SERVER" "${JOB_LIST[@]}" "$FILE_INFO" "$LOG_FILE"
 done
 
 

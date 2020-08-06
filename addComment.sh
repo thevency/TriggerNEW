@@ -15,35 +15,36 @@ date_info=`date`
 #JOB_LIST="AOS_10.x_R58MC34H3PE_Note10 AOS_10.x_BH9305KSDW_SOV39"
 
 
-echo "========= Add Comment & Report Data ===========" >> LOG_FILE.txt
+echo "[ADDCOMMENT] ========= Add Comment & Report Data ===========" >> $LOG_FILE.txt
+echo "[ADDCOMMENT] Location Of Log: $FILE.txt"
 echo "====== Report Data At $date_info ======\n" >> $REPORT_NAME.txt
 
 #0. Precondition: Current Adstyle is finished
 #1. Check last build of all jobs have been done for sure
 chmod 777 checkJobListFinish.sh
-./checkJobListFinish.sh $SERVER "${JOB_LIST[@]}" $LOG_FILE
+./checkJobListFinish.sh $SERVER "${JOB_LIST[@]}" "$LOG_FILE"
 
 #2. Get Build number - Inventory key List of each Job that need to add comment
 
 for job in $JOB_LIST;do
 
-  echo "================================"  >> LOG_FILE.txt
-  echo "Current Job: $job"  >> LOG_FILE.txt
-  echo "================================"  >> LOG_FILE.txt
+  echo "[ADDCOMMENT] ================================"  >> $LOG_FILE.txt
+  echo "[ADDCOMMENT] Current Job: $job"  >> LOG_FILE.txt
+  echo "[ADDCOMMENT] ================================"  >> $LOG_FILE.txt
 
-  BUILD_LIST=`grep -E "JOB-$job" $FILE|sed -E 's/.+BUILD#//g'|cut -d "-" -f1`
-  STYLE=`grep -E "JOB-$job" $FILE|sed -E 's/.+STYLE//g'|cut -d "#" -f2`
+  BUILD_LIST=`grep -E "JOB-$job" $FILE.txt|sed -E 's/.+BUILD#//g'|cut -d "-" -f1`
+  STYLE=`grep -E "JOB-$job" $FILE.txt|sed -E 's/.+STYLE//g'|cut -d "#" -f2`
 #4 Get Report Link
   echo "........................................................" >> $REPORT_NAME.txt
   echo "\nDevice: $job\n........................................................" >> $REPORT_NAME.txt
   echo "\n\nAD-STYLE: $STYLE\n==============================" >> $REPORT_NAME.txt
 
   for build in $BUILD_LIST;do
-    echo "Current Build: #$build"  >> LOG_FILE.txt
+    echo "[ADDCOMMENT] Current Build: #$build"  >> $LOG_FILE.txt
 #3. Prepare comment
-    Description=`grep -E "$job#$build" $FILE|cut -d "#" -f3`
-    InventoryKey=`grep -E "$job#$build" $FILE|sed -E 's/.+Inventory//g'|cut -d " " -f2`
-    echo "Description: $Description" >> LOG_FILE.txt
+    Description=`grep -E "$job#$build" $FILE.txt|cut -d "#" -f3`
+    InventoryKey=`grep -E "$job#$build" $FILE.txt|sed -E 's/.+Inventory//g'|cut -d " " -f2`
+    echo "[ADDCOMMENT] Description: $Description" >> LOG_FILE.txt
     curl -X POST --user admin:116bbb186c1d12518b67f8030236d8c73a --silent --data-urlencode "description=$Description" "$SERVER/$job/$build/submitDescription"
     echo "InventoryKey: $InventoryKey" >> $REPORT_NAME.txt
     echo "$SERVER/$job/$build/thucydidesReport/\n\n" >> $REPORT_NAME.txt
@@ -51,7 +52,7 @@ for job in $JOB_LIST;do
 done
 
 
-echo "========= End Add Comment & Report Data ==========="  >> LOG_FILE.txt
+echo "[ADDCOMMENT] ========= End Add Comment & Report Data ==========="  >> $LOG_FILE.txt
 
 #BUILD_NUMBER=`curl --user admin:116bbb186c1d12518b67f8030236d8c73a --silent $SERVER/$JOB_NAME/lastBuild/api/json|grep -E '#'|sed -E 's/.+\#//g'|cut -d"\"" -f1`
 #echo "Report Link: $SERVER/$JOB_NAME/$BUILD_NUMBER/thucydidesReport/" >> dataReport.txt
