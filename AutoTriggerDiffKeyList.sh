@@ -37,9 +37,10 @@ for set in $ADSTYLE_KEY_LIST;do
   echo "[AutoTriggerDiffListKey] START "
   echo "[AutoTriggerDiffListKey] SET DATA: $set"
   # shellcheck disable=SC2006
-  style=`echo "$ADSTYLE"|sed -E 's/\(.+//g'`
+  style=`echo "$set"|sed -E 's/\(.+//g'`
   # shellcheck disable=SC2006
-  key_list=`echo "$ADSTYLE"|sed -E 's/.+\(//g'|cut -d ")" -f1`
+  key_list=`echo "$set"|sed -E 's/.+\(//g'|cut -d ")" -f1`
+
   InventoryKey_list="$key_list"
   echo "[AutoTriggerDiffListKey] Style After Parsed: $style"
   echo "[AutoTriggerDiffListKey] Key List After Parsed: $InventoryKey_list"
@@ -59,7 +60,7 @@ for set in $ADSTYLE_KEY_LIST;do
 #================2. Add comment & Get Report Info ===========
 set -f
 InventoryKey_array=(${InventoryKey_list// / })
-  echo "[AutoTriggerSameKey] Prepare Data For Comment & Report ...start"
+  echo "[AutoTriggerDiffListKey] Prepare Data For Comment & Report ...start"
   STYLE_VALUE=$Style
   FILE_INFO="info_$Style_`date +"%Y-%m-%d-%H:%M"`"  #Use For Prepare data
   echo "" > $FILE_INFO.txt
@@ -91,22 +92,26 @@ InventoryKey_array=(${InventoryKey_list// / })
     BUILD_LIST=()
   done
 
-  echo "[AutoTriggerSameKey] Prepare Data For Comment & Report ...end"
-  echo "[AutoTriggerSameKey] Check For Ad style finish ..."
-  STATUS_OF_ADSTYLE=`grep "$style" $ADSTYLE_FILE|sed -E 's/.+'$style'//g'|cut -d "=" -f2`
-  while [[ $STATUS_OF_ADSTYLE != "true" ]]
-  do
-    sleep 600
-    echo "[AutoTriggerSameKey] Waiting with cycle 10 minutes..."
-  done
+  echo "[AutoTriggerDiffListKey] Prepare Data For Comment & Report ...end"
 
-  # ======== For COMMENT & DATA =============
-  echo "[AutoTriggerSameKey] Call checkJobListFinish ...and wait if need"
-#  ./checkJobListFinish.sh "${JOB_LIST[@]}" $SERVER
-  echo "[AutoTriggerSameKey] Call addComment.sh"
+  echo "Phase Value is $PHASE_VALUE"
+  if [[ $PHASE_VALUE == "2" ]]
+  then
+    echo "[AutoTriggerDiffListKey] Check For Ad style finish ..."
+    STATUS_OF_ADSTYLE=`grep "$style" $ADSTYLE_FILE|sed -E 's/.+'$style'//g'|cut -d "=" -f2`
+    while [[ $STATUS_OF_ADSTYLE != "true" ]]
+    do
+      sleep 300
+      echo "[AutoTriggerDiffListKey] Waiting with cycle 2 minutes..."
+    done
+  else
+    echo "[AutoTriggerDiffListKey] Phase 1 is trigger ....Check All Job Is Finished ?"
+    # ======== For COMMENT & DATA =============
+  fi
+
+  echo "[AutoTriggerDiffListKey] Call addComment.sh"
   ./addComment.sh "$SERVER" "${JOB_LIST[@]}" "$FILE_INFO"
 
 done
-
 
 echo "[AutoTriggerDiffListKey] END"
