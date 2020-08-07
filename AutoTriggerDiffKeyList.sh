@@ -61,8 +61,8 @@ for set in $ADSTYLE_KEY_LIST;do
 set -f
 InventoryKey_array=(${InventoryKey_list// / })
   echo "[AutoTriggerDiffListKey] Prepare Data For Comment & Report ...start"
-  STYLE_VALUE=$Style
-  FILE_INFO="info_$Style_`date +"%Y-%m-%d-%H:%M"`"  #Use For Prepare data
+  STYLE_VALUE=$style
+  FILE_INFO="info_$style`date +"%Y-%m-%d-%H:%M"`"  #Use For Prepare data
   echo "" > $FILE_INFO.txt
 
   for job in $JOB_LIST;do
