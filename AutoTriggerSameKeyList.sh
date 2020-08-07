@@ -8,7 +8,7 @@ BRANCH=$4
 PlanID_VALUE=$5
 PHASE_VALUE=$6
 ADSTYLE_LIST=$7
-InventoryKey_list=$8
+InventoryKey_list="$8"
 STATUS_TO_TEST=$9
 
 echo "[AutoTriggerSameKey] Parameters"
@@ -45,9 +45,9 @@ LOG_FILE="log_AutoTriggerSameListKey_`date +"%Y-%m-%d-%H:%M"`"
 
 #Only applied for Adstyles that have same inventory key list.
 for style in $ADSTYLE_LIST;do
-  echo "======================================\nTrigger Ad style: $style for all keys at `date +"%Y-%m-%d-%H:%M"`" >> "$LOG_FILE".txt
+  echo "======================================\nTrigger Ad style: $style for all keys at `date +"%Y-%m-%d-%H:%M"`"
   # shellcheck disable=SC2086
-  echo "[AutoTriggerSameKey] TestPlanID: $PlanID_VALUE\n[AutoTriggerSameKey] AD_STYLE: $style" >> $LOG_FILE.txt
+  echo "[AutoTriggerSameKey] TestPlanID: $PlanID_VALUE\n[AutoTriggerSameKey] AD_STYLE: $style"
 
   for key in $InventoryKey_list;do
     # shellcheck disable=SC2086
@@ -57,12 +57,16 @@ for style in $ADSTYLE_LIST;do
     sleep 120
   done
 
-  echo "[AutoTriggerSameKey] Finish Trigger Ad style $style" >> "$LOG_FILE".txt
+  echo "[AutoTriggerSameKey] Finish Trigger Ad style $style"
 
 #================2. Add comment & Get Report Info ===========
 
 #JOB_LIST="AOS_10.x_R58MC34H3PE_Note10 AOS_8.x_1cb3e90b1b027ece_S9Plus"
 #InventoryKey_list=("lb.nYuXlQJ4blY" "lb.cNcwLKQbbNQ")
+set -f
+InventoryKey_array=(${InventoryKey_list// / })
+
+
 echo "[AutoTriggerSameKey] Prepare Data For Comment & Report ...start"
 STYLE_VALUE=$style
 FILE_INFO="info_$style_`date +"%Y-%m-%d-%H:%M"`"  #Use For Prepare data
@@ -79,26 +83,26 @@ for job in $JOB_LIST;do
 
 
 
-  echo "[AutoTriggerSameKey] InventoryKey list SIZE: ${#InventoryKey_list[@]}" >> "$LOG_FILE".txt
+  echo "[AutoTriggerSameKey] InventoryKey list SIZE: ${#InventoryKey_array[@]}"
 
-  for (( a=0; a < ${#InventoryKey_list[@]}; a++ ));do
+  for (( a=0; a < ${#InventoryKey_array[@]}; a++ ));do
     BUILD_LIST+="$BUILD "
     BUILD=$((BUILD+1))
   done
 
   echo "[AutoTriggerSameKey] BUILD LIST: $BUILD_LIST"
 
-  echo "JOB-$job--BUILD#$BUILD_LIST-STYLE#$STYLE_VALUE" >> $FILE_INFO.txt
+  echo "JOB-$job--BUILD#$BUILD_LIST-STYLE#$STYLE_VALUE" >> "$FILE_INFO".txt
 
   for key in "${InventoryKey_list[@]}";do
-    echo "$job#$BUILD_2#Test on Plan $PlanID_VALUE - OS $OS_VALUE - Style $style - Inventory $key"  >> $FILE_INFO.txt
+    echo "$job#$BUILD_2#Test on Plan $PlanID_VALUE - OS $OS_VALUE - Style $style - Inventory $key"  >> "$FILE_INFO".txt
     BUILD_2=$((BUILD_2+1))
   done
 
   BUILD_LIST=()
 done
 echo "[AutoTriggerSameKey] Prepare Data For Comment & Report ...end"
-echo "[AutoTriggerSameKey] Check For Ad style finish ..." >> "$LOG_FILE".txt
+echo "[AutoTriggerSameKey] Check For Ad style finish ..."
 
 #============== Check AD STYLE FINISH ==========================
 #Phase 2: It is required to check if current Adstyle is finished.
@@ -109,20 +113,20 @@ echo "[AutoTriggerSameKey] Check For Ad style finish ..." >> "$LOG_FILE".txt
     while [[ $STATUS_OF_ADSTYLE != "true" ]]
     do
       sleep 900
-      echo "[AutoTriggerSameKey] Waiting with cycle 15 minutes" >> "$LOG_FILE".txt
+      echo "[AutoTriggerSameKey] Waiting with cycle 15 minutes"
     done
 
     if [[ $STATUS_OF_ADSTYLE == "true" ]]
     then
-      echo "[AutoTriggerSameKey] Trigger next style" >> "$LOG_FILE".txt
+      echo "[AutoTriggerSameKey] Trigger next style"
       # shellcheck disable=SC2086
       echo "[AutoTriggerSameKey] ==================" >> $LOG_FILE.txt
     else
-      echo "[AutoTriggerSameKey] May be a problem here - STATUS_OF_ADSTYLE: $STATUS_OF_ADSTYLE" >> "$LOG_FILE".txt
+      echo "[AutoTriggerSameKey] May be a problem here - STATUS_OF_ADSTYLE: $STATUS_OF_ADSTYLE"
     fi
   else
     #Phase1: Wait until all job of current style finish
-    echo "[AutoTriggerSameKey] Phase 1 is trigger ...." >> "$LOG_FILE".txt
+    echo "[AutoTriggerSameKey] Phase 1 is trigger ...."
 #    sleep 60
 #    # shellcheck disable=SC2039
 #    ./checkJobListFinish.sh "${JOB_LIST[@]}" $SERVER
