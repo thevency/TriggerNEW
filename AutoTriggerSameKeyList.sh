@@ -51,9 +51,9 @@ for style in $ADSTYLE_LIST;do
 
   for key in $InventoryKey_list;do
     # shellcheck disable=SC2086
-    echo "[AutoTriggerSameKey] Trigger for key: $key" >> $LOG_FILE.txt
+    echo "[AutoTriggerSameKey] Trigger for key: $key"
 #    triggerList_AOS.sh: PlanID_VALUE=$1 STYLE_VALUE=$2 InventoryKey=$3 PHASE_VALUE=$4 JOB_LIST=$5 SERVER=$6 LOG=$7 $branch=$8
-    ./triggerList.sh $PlanID_VALUE $style $key $PHASE_VALUE "${JOB_LIST[@]}" "$SERVER" "$LOG_FILE" $BRANCH $OS $STATUS_TO_TEST
+    ./triggerList.sh $PlanID_VALUE $style $key $PHASE_VALUE "${JOB_LIST[@]}" "$SERVER" $BRANCH $OS $STATUS_TO_TEST
     sleep 120
   done
 
