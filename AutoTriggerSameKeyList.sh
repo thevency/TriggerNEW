@@ -102,10 +102,12 @@ for job in $JOB_LIST;do
   BUILD_LIST=()
 done
 echo "[AutoTriggerSameKey] Prepare Data For Comment & Report ...end"
-echo "[AutoTriggerSameKey] Check For Ad style finish ..."
+echo "[AutoTriggerSameKey] Check For Ad style to be finished ..."
 
 #============== Check AD STYLE FINISH ==========================
 #Phase 2: It is required to check if current Adstyle is finished.
+echo "Phase Value is $PHASE_VALUE"
+  # shellcheck disable=SC2039
   if [[ $PHASE_VALUE == "2" ]]
   then
     STATUS_OF_ADSTYLE=`grep "$style" $ADSTYLE_FILE|sed -E 's/.+'$style'//g'|cut -d "=" -f2`
@@ -126,10 +128,10 @@ echo "[AutoTriggerSameKey] Check For Ad style finish ..."
     fi
   else
     #Phase1: Wait until all job of current style finish
-    echo "[AutoTriggerSameKey] Phase 1 is trigger ...."
-#    sleep 60
+    echo "[AutoTriggerSameKey] Phase 1 is trigger ....Check All Job Is Finished ?"
+    sleep 60
 #    # shellcheck disable=SC2039
-#    ./checkJobListFinish.sh "${JOB_LIST[@]}" $SERVER
+    ./checkJobListFinish.sh "${JOB_LIST[@]}" "$SERVER"
 #    echo "[AutoTriggerSameKey] ====================="  >> $LOG_FILE.txt
   fi
 
