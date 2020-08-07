@@ -43,21 +43,22 @@ for set in $ADSTYLE_KEY_LIST;do
   InventoryKey_list="$key_list"
   echo "[AutoTriggerDiffListKey] Style After Parsed: $style"
   echo "[AutoTriggerDiffListKey] Key List After Parsed: $InventoryKey_list"
-  for key in $InventoryKey_list_1;do
+  for key in $InventoryKey_list;do
     echo "[AutoTriggerDiffListKey] Trigger for key: $key"
 #    PlanID_VALUE=$1
 #    STYLE_VALUE=$2
 #    InventoryKey=$3
 #    PHASE_VALUE=$4
     # shellcheck disable=SC2086
-    ./triggerList.sh "$PlanID_VALUE" "$style" "$key" "$PHASE_VALUE" "${JOB_LIST[@]}" "$SERVER" "$LOG_FILE" "$BRANCH" $OS $STATUS_TO_TEST
+    ./triggerList.sh "$PlanID_VALUE" "$style" "$key" "$PHASE_VALUE" "${JOB_LIST[@]}" "$SERVER" "$BRANCH" $OS $STATUS_TO_TEST
     sleep 120
   done
   echo "[AutoTriggerDiffListKey] Trigger Of $Style is DONE"
 
 
 #================2. Add comment & Get Report Info ===========
-
+set -f
+InventoryKey_array=(${InventoryKey_list// / })
   echo "[AutoTriggerSameKey] Prepare Data For Comment & Report ...start"
   STYLE_VALUE=$Style
   FILE_INFO="info_$Style_`date +"%Y-%m-%d-%H:%M"`"  #Use For Prepare data
@@ -74,7 +75,7 @@ for set in $ADSTYLE_KEY_LIST;do
 
     echo "[AutoTriggerDiffListKey] InventoryKey List Size: ${#InventoryKey_list[@]}"
 
-    for (( a=0; a < ${#InventoryKey_list[@]}; a++ ));do
+  for (( a=0; a < ${#InventoryKey_array[@]}; a++ ));do
       BUILD_LIST+="$BUILD "
       BUILD=$((BUILD+1))
     done
@@ -101,9 +102,9 @@ for set in $ADSTYLE_KEY_LIST;do
 
   # ======== For COMMENT & DATA =============
   echo "[AutoTriggerSameKey] Call checkJobListFinish ...and wait if need"
-  ./checkJobListFinish.sh "${JOB_LIST[@]}" $SERVER
+#  ./checkJobListFinish.sh "${JOB_LIST[@]}" $SERVER
   echo "[AutoTriggerSameKey] Call addComment.sh"
-  ./addComment.sh "$SERVER" "${JOB_LIST[@]}" "$FILE_INFO" "$LOG_FILE"
+  ./addComment.sh "$SERVER" "${JOB_LIST[@]}" "$FILE_INFO"
 
 done
 
