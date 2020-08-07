@@ -27,6 +27,7 @@ for job in $JOB_LIST;do
     if [[ $count == 3 ]]
     then
       echo "Waiting for cycle 2 minutes"
+      count=0
     fi
     STATUS=`curl --silent $SERVER/$job/lastBuild/api/json|grep -E "result"|sed -E 's/.+result\"://g'|cut -d "," -f1`
   done
