@@ -22,7 +22,7 @@ echo "[AutoTriggerSameKey] 7. ADSTYLE_LIST: $ADSTYLE_LIST"
 echo "[AutoTriggerSameKey] 8. InventoryKey_list: $InventoryKey_list"
 echo "[AutoTriggerSameKey] 9. STATUS_TO_TEST: $STATUS_TO_TEST"
 
-
+chmod 777 checkJobListFinish.sh addComment.sh
 
 ADSTYLE_FILE="/Users/lw11996/.jenkins/adstyle_aos.properties"
 LOG_FILE="log_AutoTriggerSameListKey_`date +"%Y-%m-%d-%H:%M"`"
@@ -130,7 +130,7 @@ echo "Phase Value is $PHASE_VALUE"
     #Phase1: Wait until all job of current style finish
     echo "[AutoTriggerSameKey] Phase 1 is trigger ....Check All Job Is Finished ?"
     sleep 60
-#    # shellcheck disable=SC2039
+
     ./checkJobListFinish.sh "${JOB_LIST[@]}" "$SERVER"
 #    echo "[AutoTriggerSameKey] ====================="  >> $LOG_FILE.txt
   fi

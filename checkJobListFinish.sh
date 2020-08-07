@@ -6,8 +6,12 @@ SERVER=$2
 #LOG_FILE=$3
 
 
-# shellcheck disable=SC2086
+
 echo "[CheckStatus] START"
+echo "[CheckStatus] For $JOB_LIST"
+echo "[CheckStatus] On $SERVER"
+
+declare -i count=0
 
 for job in $JOB_LIST;do
 
@@ -17,11 +21,16 @@ for job in $JOB_LIST;do
 
   while [[ $STATUS == "null" ]]
   do
-    echo "Waiting for cycle 10 minutes"
-    sleep 600
+    sleep 120
+    count=$((count+1))
+    # shellcheck disable=SC2039
+    if [[ $count == 3 ]]
+    then
+      echo "Waiting for cycle 2 minutes"
+    fi
+    STATUS=`curl --silent $SERVER/$job/lastBuild/api/json|grep -E "result"|sed -E 's/.+result\"://g'|cut -d "," -f1`
   done
 
 done
 echo "[CheckStatus] All Jobs are DONE"
 echo "[CheckStatus] END"
-
