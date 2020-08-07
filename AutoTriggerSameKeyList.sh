@@ -129,9 +129,9 @@ echo "Phase Value is $PHASE_VALUE"
   else
     #Phase1: Wait until all job of current style finish
     echo "[AutoTriggerSameKey] Phase 1 is trigger ....Check All Job Is Finished ?"
-    sleep 60
-
-    ./checkJobListFinish.sh "${JOB_LIST[@]}" "$SERVER"
+#    sleep 60
+#
+#    ./checkJobListFinish.sh "${JOB_LIST[@]}" "$SERVER"
 #    echo "[AutoTriggerSameKey] ====================="  >> $LOG_FILE.txt
   fi
 

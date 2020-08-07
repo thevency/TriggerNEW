@@ -16,13 +16,13 @@ date_info=`date`
 
 
 echo "[ADDCOMMENT] ========= Add Comment & Report Data ==========="
-echo "[ADDCOMMENT] Location Of Log: $FILE.txt"
+echo "[ADDCOMMENT] Location Of Info : $FILE.txt"
 echo "====== Report Data At $date_info ======\n" >> $REPORT_NAME.txt
 
 #0. Precondition: Current Adstyle is finished
 #1. Check last build of all jobs have been done for sure
 chmod 777 checkJobListFinish.sh
-./checkJobListFinish.sh $SERVER "${JOB_LIST[@]}" "$LOG_FILE"
+./checkJobListFinish.sh "${JOB_LIST[@]}" "$SERVER"
 
 #2. Get Build number - Inventory key List of each Job that need to add comment
 
@@ -44,7 +44,7 @@ for job in $JOB_LIST;do
 #3. Prepare comment
     Description=`grep -E "$job#$build" $FILE.txt|cut -d "#" -f3`
     InventoryKey=`grep -E "$job#$build" $FILE.txt|sed -E 's/.+Inventory//g'|cut -d " " -f2`
-    echo "[ADDCOMMENT] Description: $Description" >> LOG_FILE.txt
+    echo "[ADDCOMMENT] Description: $Description"
     curl -X POST --user admin:116bbb186c1d12518b67f8030236d8c73a --silent --data-urlencode "description=$Description" "$SERVER/$job/$build/submitDescription"
     echo "InventoryKey: $InventoryKey" >> $REPORT_NAME.txt
     echo "$SERVER/$job/$build/thucydidesReport/\n\n" >> $REPORT_NAME.txt
