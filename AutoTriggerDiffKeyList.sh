@@ -54,7 +54,7 @@ for set in $ADSTYLE_KEY_LIST;do
     ./triggerList.sh "$PlanID_VALUE" "$style" "$key" "$PHASE_VALUE" "${JOB_LIST[@]}" "$SERVER" "$BRANCH" $OS $STATUS_TO_TEST
     sleep 120
   done
-  echo "[AutoTriggerDiffListKey] Trigger Of $Style is DONE"
+  echo "[AutoTriggerDiffListKey] Trigger Of $style is DONE"
 
 
 #================2. Add comment & Get Report Info ===========
