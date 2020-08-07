@@ -7,7 +7,7 @@
 SERVER=$1
 JOB_LIST=$2
 FILE=$3 #store info about trigger
-LOG_FILE=$4
+#LOG_FILE=$4
 REPORT_NAME="Report_`date +"%Y-%m-%d"`"
 date_info=`date`
 
@@ -15,7 +15,7 @@ date_info=`date`
 #JOB_LIST="AOS_10.x_R58MC34H3PE_Note10 AOS_10.x_BH9305KSDW_SOV39"
 
 
-echo "[ADDCOMMENT] ========= Add Comment & Report Data ===========" >> $LOG_FILE.txt
+echo "[ADDCOMMENT] ========= Add Comment & Report Data ==========="
 echo "[ADDCOMMENT] Location Of Log: $FILE.txt"
 echo "====== Report Data At $date_info ======\n" >> $REPORT_NAME.txt
 
@@ -28,9 +28,9 @@ chmod 777 checkJobListFinish.sh
 
 for job in $JOB_LIST;do
 
-  echo "[ADDCOMMENT] ================================"  >> $LOG_FILE.txt
-  echo "[ADDCOMMENT] Current Job: $job"  >> LOG_FILE.txt
-  echo "[ADDCOMMENT] ================================"  >> $LOG_FILE.txt
+  echo "[ADDCOMMENT] ================================"
+  echo "[ADDCOMMENT] Current Job: $job"
+  echo "[ADDCOMMENT] ================================"
 
   BUILD_LIST=`grep -E "JOB-$job" $FILE.txt|sed -E 's/.+BUILD#//g'|cut -d "-" -f1`
   STYLE=`grep -E "JOB-$job" $FILE.txt|sed -E 's/.+STYLE//g'|cut -d "#" -f2`
@@ -40,7 +40,7 @@ for job in $JOB_LIST;do
   echo "\n\nAD-STYLE: $STYLE\n==============================" >> $REPORT_NAME.txt
 
   for build in $BUILD_LIST;do
-    echo "[ADDCOMMENT] Current Build: #$build"  >> $LOG_FILE.txt
+    echo "[ADDCOMMENT] Current Build: #$build"
 #3. Prepare comment
     Description=`grep -E "$job#$build" $FILE.txt|cut -d "#" -f3`
     InventoryKey=`grep -E "$job#$build" $FILE.txt|sed -E 's/.+Inventory//g'|cut -d " " -f2`
@@ -52,7 +52,7 @@ for job in $JOB_LIST;do
 done
 
 
-echo "[ADDCOMMENT] ========= End Add Comment & Report Data ==========="  >> $LOG_FILE.txt
+echo "[ADDCOMMENT] ========= End Add Comment & Report Data ==========="
 
 #BUILD_NUMBER=`curl --user admin:116bbb186c1d12518b67f8030236d8c73a --silent $SERVER/$JOB_NAME/lastBuild/api/json|grep -E '#'|sed -E 's/.+\#//g'|cut -d"\"" -f1`
 #echo "Report Link: $SERVER/$JOB_NAME/$BUILD_NUMBER/thucydidesReport/" >> dataReport.txt

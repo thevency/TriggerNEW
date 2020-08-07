@@ -94,7 +94,7 @@ for job in $JOB_LIST;do
 
   echo "JOB-$job--BUILD#$BUILD_LIST-STYLE#$STYLE_VALUE" >> "$FILE_INFO".txt
 
-  for key in "${InventoryKey_list[@]}";do
+  for key in "${InventoryKey_array[@]}";do
     echo "$job#$BUILD_2#Test on Plan $PlanID_VALUE - OS $OS_VALUE - Style $style - Inventory $key"  >> "$FILE_INFO".txt
     BUILD_2=$((BUILD_2+1))
   done
@@ -120,7 +120,7 @@ echo "[AutoTriggerSameKey] Check For Ad style finish ..."
     then
       echo "[AutoTriggerSameKey] Trigger next style"
       # shellcheck disable=SC2086
-      echo "[AutoTriggerSameKey] ==================" >> $LOG_FILE.txt
+      echo "[AutoTriggerSameKey] =================="
     else
       echo "[AutoTriggerSameKey] May be a problem here - STATUS_OF_ADSTYLE: $STATUS_OF_ADSTYLE"
     fi
@@ -133,7 +133,7 @@ echo "[AutoTriggerSameKey] Check For Ad style finish ..."
 #    echo "[AutoTriggerSameKey] ====================="  >> $LOG_FILE.txt
   fi
 
-  ./addComment.sh "$SERVER" "${JOB_LIST[@]}" "$FILE_INFO" "$LOG_FILE"
+  ./addComment.sh "$SERVER" "${JOB_LIST[@]}" "$FILE_INFO"
 done
 
 
