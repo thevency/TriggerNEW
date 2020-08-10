@@ -22,7 +22,7 @@ echo "====== Report Data At $date_info ======\n" >> $REPORT_NAME.txt
 #0. Precondition: Current Adstyle is finished
 #1. Check last build of all jobs have been done for sure
 chmod 777 checkJobListFinish.sh
-./checkJobListFinish.sh "${JOB_LIST[@]}" "$SERVER"
+./checkJobListFinish.sh "${JOB_LIST[@]}" "$SERVER" "$FILE"
 
 #2. Get Build number - Inventory key List of each Job that need to add comment
 

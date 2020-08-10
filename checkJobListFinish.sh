@@ -1,13 +1,13 @@
 #!/bin/sh
 
 
-#JOB_LIST=$1
-#SERVER=$2
-#FILE=$3 #store info about trigger
+JOB_LIST=$1
+SERVER=$2
+FILE=$3 #store info about trigger
 #LOG_FILE=$3
-JOB_LIST="AOS_10.x_R58MC34H3PE_Note10 AOS_9.x_R58M87CHVDV_Note9"
-SERVER=http://10.254.194.36:8080/job/Jobs%20Base%20On%20Device/view/LADM/job
-FILE="info_2020-08-09-19_57"
+#JOB_LIST="AOS_10.x_R58MC34H3PE_Note10 AOS_9.x_R58M87CHVDV_Note9"
+#SERVER=http://10.254.194.36:8080/job/Jobs%20Base%20On%20Device/view/LADM/job
+#FILE="info_2020-08-09-19_57"
 
 
 echo "[CheckStatus] START"
