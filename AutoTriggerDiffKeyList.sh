@@ -5,14 +5,13 @@
 # Report Data is dataReport.txt
 
 SERVER=$1
-OS=$2
-JOB_LIST=$3
-BRANCH=$4
-PlanID_VALUE=$5
-PHASE_VALUE=$6
-ADSTYLE_KEY_LIST=$7
-ADSTYLE_SIZE=$8
-STATUS_TO_TEST=$9
+JOB_LIST=$2
+BRANCH=$3
+PlanID_VALUE=$4
+PHASE_VALUE=$5
+ADSTYLE_KEY_LIST=$6
+ADSTYLE_SIZE=$7
+STATUS_TO_TEST=$8
 
 #example of ADSTYLE_KEY_LIST: BannerView2_Image_600x314(lb.3JR3g_Z3yoU) IconView_Image_600x314-540x540(lb.oLFjKT8kJDo)
 
@@ -24,23 +23,27 @@ name_of_report=`date +"%Y-%m-%d-%H:%M"`
 
 echo "[AutoTriggerDiffListKey] Parameters"
 echo "[AutoTriggerDiffListKey] 1. SERVER: $SERVER"
-echo "[AutoTriggerDiffListKey] 2. OS: $OS"
-echo "[AutoTriggerDiffListKey] 3. JOB_LIST: $JOB_LIST"
-echo "[AutoTriggerDiffListKey] 4. BRANCH: $BRANCH"
-echo "[AutoTriggerDiffListKey] 5. PlanID_VALUE: $PlanID_VALUE"
-echo "[AutoTriggerDiffListKey] 6. PHASE_VALUE: $PHASE_VALUE"
-echo "[AutoTriggerDiffListKey] 7. ADSTYLE_KEY_LIST: $ADSTYLE_KEY_LIST"
-echo "[AutoTriggerDiffListKey] 8. ADSTYLE_SIZE: $ADSTYLE_SIZE"
-echo "[AutoTriggerDiffListKey] 9. STATUS_TO_TEST: $STATUS_TO_TEST"
+echo "[AutoTriggerDiffListKey] 2. JOB_LIST: $JOB_LIST"
+echo "[AutoTriggerDiffListKey] 3. BRANCH: $BRANCH"
+echo "[AutoTriggerDiffListKey] 4. PlanID_VALUE: $PlanID_VALUE"
+echo "[AutoTriggerDiffListKey] 5. PHASE_VALUE: $PHASE_VALUE"
+echo "[AutoTriggerDiffListKey] 6. ADSTYLE_KEY_LIST: $ADSTYLE_KEY_LIST"
+echo "[AutoTriggerDiffListKey] 7. ADSTYLE_SIZE: $ADSTYLE_SIZE"
+echo "[AutoTriggerDiffListKey] 8. STATUS_TO_TEST: $STATUS_TO_TEST"
 
-for set in $ADSTYLE_KEY_LIST;do
+RAW_STYLE=`sed -E 's/ /-/g' <<< $ADSTYLE_KEY_LIST`
+RAW_STYLE=`sed -E 's/)-/) /g' <<< $RAW_STYLE`
+
+echo "[AutoTriggerDiffListKey] RAW_STYLE: $RAW_STYLE"
+ADSTYLE_KEY_LIST="$RAW_STYLE"
+for i in $ADSTYLE_KEY_LIST;do
   echo "[AutoTriggerDiffListKey] START "
-  echo "[AutoTriggerDiffListKey] SET DATA: $set"
+  echo "[AutoTriggerDiffListKey] SET DATA: $i"
   # shellcheck disable=SC2006
-  style=`echo "$set"|sed -E 's/\(.+//g'`
+  style=`echo "$i"|sed -E 's/\(.+//g'`
   # shellcheck disable=SC2006
-  key_list=`echo "$set"|sed -E 's/.+\(//g'|cut -d ")" -f1`
-
+  raw_key_list=`echo "$i"|sed -E 's/.+\(//g'|cut -d ")" -f1`
+  key_list=`echo $raw_key_list|sed -E 's/-/ /g'`
   InventoryKey_list="$key_list"
   echo "[AutoTriggerDiffListKey] Style After Parsed: $style"
   echo "[AutoTriggerDiffListKey] Key List After Parsed: $InventoryKey_list"
@@ -51,7 +54,7 @@ for set in $ADSTYLE_KEY_LIST;do
 #    InventoryKey=$3
 #    PHASE_VALUE=$4
     # shellcheck disable=SC2086
-    ./triggerList.sh "$PlanID_VALUE" "$style" "$key" "$PHASE_VALUE" "${JOB_LIST[@]}" "$SERVER" "$BRANCH" $OS $STATUS_TO_TEST
+    ./triggerList.sh "$PlanID_VALUE" "$style" "$key" "$PHASE_VALUE" "${JOB_LIST[@]}" "$SERVER" "$BRANCH" $STATUS_TO_TEST
     sleep 120
   done
   echo "[AutoTriggerDiffListKey] Trigger Of $style is DONE"

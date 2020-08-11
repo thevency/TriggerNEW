@@ -6,10 +6,8 @@ InventoryKey=$3
 PHASE_VALUE=$4
 ListJob=$5
 SERVER=$6
-#FILE_NAME=$7
 BRANCH_VALUE=$7
-OS_VALUE=$8
-STATUS_TO_TEST=$9
+STATUS_TO_TEST=$8
 
 #Print out data input
 echo "\n======= Log_of_Trigger_A_ListJob ======="
@@ -21,6 +19,7 @@ echo "[TRIGGER] START "
 for i in $ListJob;do
   JOB_NAME=$i
   echo "[TRIGGER] For $i"
+  echo "Request: $SERVER/$JOB_NAME/buildWithParameters?BRANCH=$BRANCH_VALUE&ForTestCases=$STATUS_TO_TEST&PlanID=$PlanID_VALUE&AD_STYLE=$STYLE_VALUE&Phase=Phase$PHASE_VALUE&InventoryKey=$InventoryKey"
   curl -X POST --user admin:116bbb186c1d12518b67f8030236d8c73a --silent "$SERVER/$JOB_NAME/buildWithParameters?BRANCH=$BRANCH_VALUE&ForTestCases=$STATUS_TO_TEST&PlanID=$PlanID_VALUE&AD_STYLE=$STYLE_VALUE&Phase=Phase$PHASE_VALUE&InventoryKey=$InventoryKey"
 done
 echo "[TRIGGER] END"
@@ -41,5 +40,3 @@ echo "[TRIGGER] END"
 #  BUILD_NUMBER=`curl --user admin:116bbb186c1d12518b67f8030236d8c73a --silent $SERVER/$JOB_NAME/lastBuild/api/json|grep -E '#'|sed -E 's/.+\#//g'|cut -d"\"" -f1`
 #  echo "$JOB_NAME--BUILD#$BUILD_NUMBER#Test on plan $PlanID_VALUE - OS $OS_VALUE - Style $STYLE_VALUE - Inventory $InventoryKey" >> FILE_INFO.txt
 #done
-
-
