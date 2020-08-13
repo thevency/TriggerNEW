@@ -14,9 +14,7 @@ ADSTYLE_SIZE=$7
 STATUS_TO_TEST=$8
 
 #example of ADSTYLE_KEY_LIST: BannerView2_Image_600x314(lb.3JR3g_Z3yoU) IconView_Image_600x314-540x540(lb.oLFjKT8kJDo)
-
-ADSTYLE_FILE="/Users/lw11996/.jenkins/adstyle_aos.properties"
-LOG_FILE="log_AutoTriggerDiffListKey_`date +"%Y-%m-%d-%H:%M"`"
+#LOG_FILE="log_AutoTriggerDiffListKey_`date +"%Y-%m-%d-%H:%M"`"
 REPORT_FILE=""
 
 name_of_report=`date +"%Y-%m-%d-%H:%M"`
@@ -97,15 +95,23 @@ InventoryKey_array=(${InventoryKey_list// / })
 
   echo "[AutoTriggerDiffListKey] Prepare Data For Comment & Report ...end"
 
-  echo "Phase Value is $PHASE_VALUE"
+  ADSTYLE_FILE="/Users/lw11996/.jenkins/adstyle_aos.properties"
+
+  echo "[AutoTriggerDiffListKey] Phase Value is $PHASE_VALUE"
+
   if [[ $PHASE_VALUE == "2" ]]
   then
-    echo "[AutoTriggerDiffListKey] Check For Ad style finish ..."
+    echo "[AutoTriggerDiffListKey] Check For Ad Style Finish ..."
+
     STATUS_OF_ADSTYLE=`grep "$style" $ADSTYLE_FILE|sed -E 's/.+'$style'//g'|cut -d "=" -f2`
+
+    echo "[AutoTriggerSameKey] Status of Style $style: $STATUS_OF_ADSTYLE"
+
     while [[ $STATUS_OF_ADSTYLE != "true" ]]
     do
       sleep 300
-      echo "[AutoTriggerDiffListKey] Waiting with cycle 2 minutes..."
+      echo "[AutoTriggerDiffListKey] Waiting with cycle 5 minutes..."
+      STATUS_OF_ADSTYLE=`grep "$style" $ADSTYLE_FILE|sed -E 's/.+'$style'//g'|cut -d "=" -f2`
     done
   else
     echo "[AutoTriggerDiffListKey] Phase 1 is trigger ....Check All Job Is Finished ?"

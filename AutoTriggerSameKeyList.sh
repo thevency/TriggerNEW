@@ -2,30 +2,27 @@
 
 # Inventory should consist with ADSTYLE
 SERVER=$1
-OS=$2
-JOB_LIST=$3
-BRANCH=$4
-PlanID_VALUE=$5
-PHASE_VALUE=$6
-ADSTYLE_LIST=$7
-InventoryKey_list="$8"
-STATUS_TO_TEST=$9
+JOB_LIST=$2
+BRANCH=$3
+PlanID_VALUE=$4
+PHASE_VALUE=$5
+ADSTYLE_LIST=$6
+InventoryKey_list="$7"
+STATUS_TO_TEST=$8
 
 echo "[AutoTriggerSameKey] Parameters"
 echo "[AutoTriggerSameKey] 1. SERVER: $SERVER"
-echo "[AutoTriggerSameKey] 2. OS: $OS"
-echo "[AutoTriggerSameKey] 3. JOB_LIST: $JOB_LIST"
-echo "[AutoTriggerSameKey] 4. BRANCH: $BRANCH"
-echo "[AutoTriggerSameKey] 5. PlanID_VALUE: $PlanID_VALUE"
-echo "[AutoTriggerSameKey] 6. PHASE_VALUE: $PHASE_VALUE"
-echo "[AutoTriggerSameKey] 7. ADSTYLE_LIST: $ADSTYLE_LIST"
-echo "[AutoTriggerSameKey] 8. InventoryKey_list: $InventoryKey_list"
-echo "[AutoTriggerSameKey] 9. STATUS_TO_TEST: $STATUS_TO_TEST"
+echo "[AutoTriggerSameKey] 2. JOB_LIST: $JOB_LIST"
+echo "[AutoTriggerSameKey] 3. BRANCH: $BRANCH"
+echo "[AutoTriggerSameKey] 4. PlanID_VALUE: $PlanID_VALUE"
+echo "[AutoTriggerSameKey] 5. PHASE_VALUE: $PHASE_VALUE"
+echo "[AutoTriggerSameKey] 6. ADSTYLE_LIST: $ADSTYLE_LIST"
+echo "[AutoTriggerSameKey] 7. InventoryKey_list: $InventoryKey_list"
+echo "[AutoTriggerSameKey] 8. STATUS_TO_TEST: $STATUS_TO_TEST"
 
 chmod 777 checkJobListFinish.sh addComment.sh
 
-ADSTYLE_FILE="/Users/lw11996/.jenkins/adstyle_aos.properties"
-LOG_FILE="log_AutoTriggerSameListKey_`date +"%Y-%m-%d-%H:%M"`"
+#LOG_FILE="log_AutoTriggerSameListKey_`date +"%Y-%m-%d-%H:%M"`"
 #SERVER=http://10.254.194.36:8080/job/Jobs%20Base%20On%20Device/view/LADM/job
 #OS="android"
 #JOB_LIST="AOS_10.x_R58MC34H3PE_Note10 iOS_12.x_3cd794dc710325abb8881184106b1eb0fccb2099_XS"
@@ -53,7 +50,7 @@ for style in $ADSTYLE_LIST;do
     # shellcheck disable=SC2086
     echo "[AutoTriggerSameKey] Trigger for key: $key"
 #    triggerList_AOS.sh: PlanID_VALUE=$1 STYLE_VALUE=$2 InventoryKey=$3 PHASE_VALUE=$4 JOB_LIST=$5 SERVER=$6 LOG=$7 $branch=$8
-    ./triggerList.sh $PlanID_VALUE $style $key $PHASE_VALUE "${JOB_LIST[@]}" "$SERVER" $BRANCH $OS $STATUS_TO_TEST
+    ./triggerList.sh $PlanID_VALUE $style $key $PHASE_VALUE "${JOB_LIST[@]}" "$SERVER" $BRANCH $STATUS_TO_TEST
     sleep 120
   done
 
@@ -106,16 +103,21 @@ echo "[AutoTriggerSameKey] Check For Ad style to be finished ..."
 
 #============== Check AD STYLE FINISH ==========================
 #Phase 2: It is required to check if current Adstyle is finished.
+ADSTYLE_FILE="/Users/lw11996/.jenkins/adstyle.properties"
+
 echo "Phase Value is $PHASE_VALUE"
   # shellcheck disable=SC2039
   if [[ $PHASE_VALUE == "2" ]]
   then
     STATUS_OF_ADSTYLE=`grep "$style" $ADSTYLE_FILE|sed -E 's/.+'$style'//g'|cut -d "=" -f2`
 
+    echo "[AutoTriggerSameKey] Status of Style $style: $STATUS_OF_ADSTYLE"
+
     while [[ $STATUS_OF_ADSTYLE != "true" ]]
     do
-      sleep 900
-      echo "[AutoTriggerSameKey] Waiting with cycle 15 minutes"
+      sleep 300
+      echo "[AutoTriggerSameKey] Waiting with cycle 5 minutes"
+      STATUS_OF_ADSTYLE=`grep "$style" $ADSTYLE_FILE|sed -E 's/.+'$style'//g'|cut -d "=" -f2`
     done
 
     if [[ $STATUS_OF_ADSTYLE == "true" ]]
@@ -129,16 +131,12 @@ echo "Phase Value is $PHASE_VALUE"
   else
     #Phase1: Wait until all job of current style finish
     echo "[AutoTriggerSameKey] Phase 1 is trigger ....Check All Job Is Finished ?"
-#    sleep 60
-#
-#    ./checkJobListFinish.sh "${JOB_LIST[@]}" "$SERVER"
-#    echo "[AutoTriggerSameKey] ====================="  >> $LOG_FILE.txt
   fi
 
   ./addComment.sh "$SERVER" "${JOB_LIST[@]}" "$FILE_INFO"
 done
 
-
+echo "[AutoTriggerSameKey]  END"
 
 
 
