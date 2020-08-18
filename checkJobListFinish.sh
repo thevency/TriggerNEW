@@ -34,9 +34,11 @@ for job in $JOB_LIST;do
 
   STATUS=`curl --silent $SERVER/$job/$lastBuild/api/json|grep -E "result"|sed -E 's/.+result\"://g'|cut -d "," -f1`
 
-  echo "[CheckStatus] Job $job is $STATUS"
+  endflg=`curl --silent $SERVER/$job/$lastBuild/console|grep -qE "Finished: " && echo true`
 
-  while [[ $STATUS == "null" || $STATUS = "" ]]
+  echo "[CheckStatus] Job $job is $STATUS and endflg is $endflg"
+
+  while [[ $STATUS == "null" || $STATUS = "" || $endflg != "true" ]]
   do
     sleep 180
     count=$((count+1))
@@ -47,7 +49,11 @@ for job in $JOB_LIST;do
       count=0
     fi
     STATUS=`curl --silent $SERVER/$job/$lastBuild/api/json|grep -E "result"|sed -E 's/.+result\"://g'|cut -d "," -f1`
+    endflg=`curl --silent $SERVER/$job/$lastBuild/console|grep -qE "Finished: " && echo true`
+    echo "[CheckStatus] Job $job is $STATUS and endflg is $endflg"
   done
+
+  sleep 60
 
 done
 echo "[CheckStatus] All Jobs are DONE"
